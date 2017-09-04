@@ -1,2 +1,35 @@
 % This is the file for exercise 1e in Project 1
 
+A list of what we are supposed to do from the exercise text:
+
+\begin{itemize}
+
+\item Compare your results with those from the LU decomposition codes for the matrix of sizes $10\times 10$, $100\times 100$ and
+$1000\times 1000$ (use the library functions provided  on the webpage of the course. Alternatively, if you use armadillo as a library, you can use the similar function for LU decomposition.  The armadillo function for the LU decomposition is called $LU$ while the function for solving linear sets of equations is called $solve$.
+Use for example the unix function \emph{time} when you run your codes and compare the time usage between LU decomposition and your tridiagonal solver. Alternatively, you can use the functions in C++, Fortran or Python that measure the time used)
+
+\item Make a table of the results and comment the differencesin execution time.
+
+\item How many floating point operations does the LU decomposition use to solve the set of linear equations?
+
+\item Answer: Can you run the standard LU decomposition
+for a matrix of the size $10^5\times 10^5$?
+
+\item Comment your results.
+
+To compute the elapsed time in c++ you can use the following statements (see comment)
+%\begin{print}
+%...
+%#include "time.h"   //  you have to include the time.h header
+%int main()
+%{
+%    // declarations of variables 
+%    ...
+%    clock_t start, finish;  //  declare start and final time
+%    start = clock();
+%    // your code is here, do something and then get final time
+%    finish = clock();
+%    ( (finish - start)/CLOCKS_PER_SEC );
+%...
+%\end{print}
+\end{itemize}
