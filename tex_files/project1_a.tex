@@ -1,2 +1,113 @@
-% This is the file for exercise 1b in Project 1
+% This is the file for exercise 1a in Project 1
+
+\begin{equation}\label{eq:secderiv}
+   -\frac{v_{i+1}+v_{i-1}-2v_i}{h^2} = f_i  \hspace{0.5cm} \mathrm{for} \hspace{0.1cm} i=1,\dots, n,
+\end{equation}
+where $f_i=f(x_i)$.
+
+Rewriting the Equation \ref{eq:secderiv} as a linear set of equations of the form
+
+\begin{equation*}
+   \mathbf{A}\mathbf{v} = \tilde{\mathbf{b}},
+\end{equation*}
+where $\mathbf{A}$ is an $n\times n$  tridiagonal matrix which we rewrite as
+
+\[
+    \mathbf{A} = \begin{bmatrix}
+    	2& -1& 0 &\cdots & 0 &0 \\
+        -1 & 2 & -1 &0 &\cdots &0 \\
+        0&-1 &2 & -1 & \cdots & 0 \\
+        \vdots& \vdots & \ddots &\ddots &\ddots & \vdots \\
+        0&0 & \cdots &-1 &2& -1 \\
+        0&0 & \cdots & 0  &-1 & 2 \\
+        \end{bmatrix},
+\]
+and $\tilde{b}_i=h^2f_i$.\\
+
+Writing out the equations:
+\begin{align*}
+i = 1: &-v_0+2v_1-v_2 = f_1 h^2\\
+i = 2: &-v_1+2v_2-v_3 = f_2 h^2\\
+\vdots \indent &\indent \vdots\\
+i = n: &-v_{n-1}+2v_n-v_{n+1} = f_n h^2\\
+\end{align*}
+
+where $v_0 = 0$ and $v_{n+1} = 0$.
+
+Adding some zeros to the equations for illustrative purposes:
+
+\begin{align*}
+&i = 1:  &2v_1-v_2 + 0 + 0 + 0 +0 + \cdots + 0 = f_1 h^2\\
+&i = 2: &-v_1+2v_2-v_3 +0 + 0 + \cdots + 0 = f_2 h^2\\
+&i = 3:  &0 -v_2+2v_3-v_4 + 0 + \cdots + 0 = f_2 h^2\\
+&\indent\vdots &\indent \indent \vdots\\
+&i = n-1: &0 + \cdots+ 0 -v_{n-2}+2v_{n-1} - v_n= f_2 h^2\\
+&i = n: &0 + \cdots + 0 + 0 + 0 -v_{n-1}+2v_n= f_2 h^2\\
+\end{align*}
+
+We can now recognize the equations as a product between a matrix an a vector that equals another vector.\\
+
+Defining vectors that fit:
+\begin{multicols}{3}
+$$\textbf{v} = \begin{bmatrix}
+	v_1\\
+	v_2\\
+	\vdots\\
+	v_{n}\\
+\end{bmatrix}$$
+
+$$ \tilde{\textbf{b}} = \begin{bmatrix}
+	f_1 h^2\\
+	f_2 h^2\\
+	\vdots\\
+	f_{n} h^2\\
+\end{bmatrix} $$
+\end{multicols}
+
+The matrix is the matrix $\textbf{A}$. Then we have:
+\[
+    \begin{bmatrix}
+    	2& -1& 0 &\cdots & 0 &0 \\
+        -1 & 2 & -1 &0 &\cdots &0 \\
+        0&-1 &2 & -1 & \cdots & 0 \\
+        \vdots& \vdots & \ddots &\ddots &\ddots & \vdots \\
+        0&0 & \cdots &-1 &2& -1 \\
+        0&0 & \cdots & 0  &-1 & 2 \\
+        \end{bmatrix}
+\begin{bmatrix}
+	v_1\\
+	v_2\\
+	v_3\\
+	\vdots\\
+	v_{n-1}\\
+	v_{n}\\
+\end{bmatrix}=
+\begin{bmatrix}
+	f_1 h^2\\
+	f_2 h^2\\
+	f_3 h^2\\
+	\vdots\\
+	f_{n-1} h^2\\
+	f_{n} h^2\\
+\end{bmatrix}
+\implies \mathbf{A}\mathbf{v}=\tilde{\mathbf{b}}
+\]
+
+Putting the solution into the Poisson equation:
+
+The Poisson equation:
+\[ -u''(x) = f(x)\]
+
+In this case $f(x) = 100 e^{-10x}$.\\
+
+The solution and derivatives:
+\begin{align*}
+u(x) &= 1 - \left(1-e^{-10}\right) x - e^{-10x}\\
+u'(x) &= \left(1-e^{-10}\right)+ 10 e^{-10x}\\ 
+u''(x) &= -100 e^{-10x}\\
+\end{align*}
+
+The solution is a solution of the Poisson equation:
+
+\[ -u''(x) = -(-100) e^{-10x} = 100 e^{-10x} = f(x) \]
 
