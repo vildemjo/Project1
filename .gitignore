@@ -21,6 +21,7 @@ temp*
 *.idx
 *.nav
 *.out
+*.gz
 *.toc
 *.snm
 *.vrb
