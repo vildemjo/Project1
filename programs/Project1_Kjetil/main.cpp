@@ -22,7 +22,7 @@ int main(){
     v = new double[n];
 
 
-    double h = 1.0/(double (1 + n));
+    double h = 1.0/(double (n+1));
 
     //x[0] = h;
 //Filling in the diagonals and b_tilde as we have in 1b
@@ -30,23 +30,28 @@ for(int i =0; i<n;i++){
     a[i] = -1;
     b[i] = 2;
     c[i] = -1;
-    b_tilde[i] = function_f(i*h)*h*h;
+    b_tilde[i] = function_f((i+1)*h)*h*h;
 }
 
 //Forward substitution
 
 for(int i =1; i<n;i++){
-    b[i] = b[i]-a[i]*c[i-1]/b[i-1];
-    b_tilde[i] = b_tilde[i] - a[i]*b_tilde[i-1]/b[i-1];
+    b[i] = b[i]-a[i-1]*c[i-1]/b[i-1];
+    b_tilde[i] = b_tilde[i] - a[i-1]*b_tilde[i-1]/b[i-1];
 }
 
 
 //Backward substitution
-v[n]
+v[n-1] = b_tilde[n-1]/b[n-1];
+cout << v[n-1] << " " << deriv_u((n)*h) << endl;
+
 for(int i =n-2; i>=0 ; i--){
-    cout <<i<<endl;
+    v[i] = b_tilde[i]- c[i]*v[i+1]/b[i];
+    cout << v[i] << " " << deriv_u(i*h) << endl;
 }
 
+
+// ALl arrays are internal, have not x=0 and x=1, but everything inside.
 
 
 
