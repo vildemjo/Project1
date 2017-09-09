@@ -53,7 +53,7 @@ outfile << fixed;
 outfile << setprecision(4);
 outfile << "Nummerical derivartion in task 1b" <<endl;
 outfile << "n="<<"  "<< n << endl;;
-outfile <<"Nummerical_solution   Analytical_solution"<< endl;
+outfile <<"Nummerical_solution   Analytical_solution        rel.error"<< endl;
 
 
 //Backward substitution
@@ -63,7 +63,7 @@ for(int i =n-2; i>=0 ; i--){
     v[i] = b_tilde[i]- c[i]*v[i+1]/b[i];
 }
 for(int i=0; i<n; i++){
-    outfile << v[i] << "               " << deriv_u((i+1)*h) << endl;
+    outfile << v[i] << "               " << deriv_u((i+1)*h) <<"                       "<<RelativeError(v[i],deriv_u((i+1)*h) ) << endl;
 }
 
 // ALl arrays are internal, have not x=0 and x=1, but everything inside.

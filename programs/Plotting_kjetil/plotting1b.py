@@ -34,6 +34,7 @@ for k in range(len(filer)):
 
 	nummerisk = []
 	analytisk = []
+	feil =[]
 	with open(filer[k]) as infile:
 		for i in range(3):
 			firstline = infile.readline()
@@ -42,7 +43,7 @@ for k in range(len(filer)):
 			thisline = line.split()
 			nummerisk.append(thisline[0])
 			analytisk.append(thisline[1])
-
+			feil.append(thisline[2])
 
 	n = len(nummerisk)
 	print n
@@ -55,3 +56,10 @@ for k in range(len(filer)):
 	title("Plot with the general algorithm, n = %0.f" %n)
 	xlabel("x"); ylabel("y")
 	savefig("1b_n_%.0f.pdf" %n)
+	"""
+	figure(5)
+	title("Rel.error")
+	plot(x,feil, label = n)
+	legend()
+	savefig("1b_error.pdf")
+	"""
