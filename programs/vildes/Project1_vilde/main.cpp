@@ -33,13 +33,9 @@ int main(){
         double Error;
 
         for(int i = 1; i<n; i++){
-            //double tmp = Calculated_solution(n,x);
             Error = RelativeError(v[i], closed_form_solution(x[i]));
-            if(i = 3)
-                cout << Error;
             if(MaxError<Error){
                 MaxError = Error;
-
             }
         }
         cout << "n=" << n <<" MaxError=" << MaxError << endl;
@@ -117,7 +113,7 @@ void print_to_file(int n, double* v, double* x){
     outfile << fixed;
     outfile << setprecision(4);
 
-    outfile << "Calculated solution:" << " , " << "Analytical solution:";
+    outfile << "Calculated solution:" << " , " << "Analytical solution:" << endl;
 
     for(int i = 0; i<n;i++){
         outfile << v[i] << "            " << closed_form_solution(x[i]) << endl;
