@@ -16,7 +16,7 @@ ofstream outfile;
 
 int main(){
 
-for(int n = 10;n<11; n=n*10){
+for(int n = 10;n<1e2 + 1; n=n*10){
     //int n = 10;
     double *a, *b, *c, *b_tilde, *v;
     a = new double[n];
@@ -45,12 +45,10 @@ for(int i =0; i<n;i++){
 for(int i =1; i<n;i++){
     b[i] = b[i]-a[i-1]*c[i-1]/b[i-1];
     b_tilde[i] = b_tilde[i] - a[i-1]*b_tilde[i-1]/b[i-1];
-    cout << b_tilde[i]<<endl;
 }
-}
-cout<< "        " <<endl;
 
-/*
+
+
 // prepare file for writing
 outfile.open(outfilename);
 outfile << fixed;
@@ -64,7 +62,7 @@ outfile <<"Nummerical_solution   Analytical_solution        rel.error"<< endl;
 v[n-1] = b_tilde[n-1]/b[n-1];
 
 for(int i =n-2; i>=0 ; i--){
-    v[i] = b_tilde[i]- c[i]*v[i+1]/b[i];
+    v[i] = (b_tilde[i]- c[i]*v[i+1])/b[i];
 }
 for(int i=0; i<n; i++){
     outfile << v[i] << "               " << deriv_u((i+1)*h) <<"                       "<<RelativeError(v[i],deriv_u((i+1)*h) ) << endl;
@@ -75,7 +73,7 @@ for(int i=0; i<n; i++){
 
 
 outfile.close();
-*/
+}
 
 // -----------------------------------------------------------
 // 1c:
@@ -84,7 +82,7 @@ outfile.close();
 
 for(int n = 10;n<11; n=n*10){
     //int n = 10;
-    double *a, *b, *c, *b_tilde, *v;
+    double *b, *c, *b_tilde, *v;
     //a = new double[n];
     b = new double[n];
     c = new double[n];
@@ -110,14 +108,22 @@ flops = 4*(n-1);
 //Forward substitution
 
 for(int i =1; i<n;i++){
-    b[i] = (i+1.0)/i;
-    b_tilde[i] = b_tilde[i] + ((i-1.0)*b_tilde[i-1])/double(i);
-    cout <<b_tilde[i]<<endl;
+    b[i] = (i+2.0)/(i+1.0);
+    b_tilde[i] = b_tilde[i] + (i)*b_tilde[i-1]/double(i+1.0);
 }
 
 
+v[n-1] = b_tilde[n-1]/b[n-1];
+for(int i =n-2; i>=0 ; i--){
+    v[i] = double(i)/(i+1.0)*(b_tilde[i]+ v[i+1]);
+    //v[i] = (b_tilde[i] + v[i+1])/b[i];
+
+}
 
 
+for(int i= 0; i<n;i++){
+     cout<< v[i]<< endl;
+}
 }
 
 
