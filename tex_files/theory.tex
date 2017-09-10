@@ -1,14 +1,24 @@
+In this project we will solve the general one-dimensional Poisson's equation (Eq. \ref{eq:Poisson}) for $f(x) = 100e^{-10x}$ and $x \in [0,1]$. The boundary conditions are Dirichlet bondary conditions. That means that $u(0) = u(1) = 0$.
+
+\subsection{Rewriting the problem to a matrix problem}
+
+\begin{equation}\label{eq:Poisson}
+-u''(x) = f(x)
+\end{equation}
+
+We rewrite the second derivative by switching from the continuous $u(x)$ to $n$ discrete number of points $v(x_i) = v_i$ and then using a Taylor expansion to obtain the new Poisson equation (Eq. \ref{eq:secderiv}).
+
 \begin{equation}\label{eq:secderiv}
-   -\frac{v_{i+1}+v_{i-1}-2v_i}{h^2} = f_i  \hspace{0.5cm} \mathrm{for} \hspace{0.1cm} i=1,\dots, n,
+-\frac{v_{i+1}+v_{i-1}-2v_i}{h^2} = f_i  \hspace{0.5cm} \mathrm{for} \hspace{0.1cm} i=1,\dots, n,
 \end{equation}
 where $f_i=f(x_i)$.
 
-Rewriting the Equation \ref{eq:secderiv} as a linear set of equations of the form
+The next step is to rewrite Eq. \ref{eq:secderiv} as a linear set of equations of the form of Eq. \ref{eq:matrix_equation}.
 
-\begin{equation*}
-   \mathbf{A}\mathbf{v} = \tilde{\mathbf{b}},
-\end{equation*}
-where $\mathbf{A}$ is an $n\times n$  tridiagonal matrix which we rewrite as
+\begin{equation}\label{eq:matrix_equation}
+   \mathbf{A}\mathbf{v} = \mathbf{b},
+\end{equation}
+where $\mathbf{A}$ is an $n\times n$  tridiagonal matrix:
 
 \[
     \mathbf{A} = \begin{bmatrix}
@@ -20,9 +30,9 @@ where $\mathbf{A}$ is an $n\times n$  tridiagonal matrix which we rewrite as
         0&0 & \cdots & 0  &-1 & 2 \\
         \end{bmatrix},
 \]
-and $\tilde{b}_i=h^2f_i$.\\
+and $b_i=h^2f_i$.\\
 
-Writing out the equations:
+Writing out the equations gives us:
 \begin{align*}
 i = 1: &-v_0+2v_1-v_2 = f_1 h^2\\
 i = 2: &-v_1+2v_2-v_3 = f_2 h^2\\
@@ -38,14 +48,14 @@ Adding some zeros to the equations for illustrative purposes:
 &i = 1:  &2v_1-v_2 + 0 + 0 + 0 +0 + \cdots + 0 = f_1 h^2\\
 &i = 2: &-v_1+2v_2-v_3 +0 + 0 + \cdots + 0 = f_2 h^2\\
 &i = 3:  &0 -v_2+2v_3-v_4 + 0 + \cdots + 0 = f_3 h^2\\
-&\indent\vdots \indent &\vdots \indent \indent \indent \\
+&\indent\vdots \indent &\vdots \indent \indent \hspace{2cm} \indent \\
 &i = n-1: &0 + \cdots+ 0 -v_{n-2}+2v_{n-1} - v_n= f_{n-1} h^2\\
 &i = n: &0 + \cdots + 0 + 0 + 0 -v_{n-1}+2v_n= f_n h^2\\
 \end{align*}
 
-We can now recognize the equations as a product between a matrix an a vector that equals another vector.\\
+We can now recognize the equations as a product between a matrix and a vector that equals another vector.\\
 
-Defining vectors that fit:
+We define vectors that fits like this:
 \begin{multicols}{3}
 $$\textbf{v} = \begin{bmatrix}
 	v_1\\
@@ -88,23 +98,23 @@ The matrix is the matrix $\textbf{A}$. Then we have:
 	f_{n-1} h^2\\
 	f_{n} h^2\\
 \end{bmatrix}
-\implies \mathbf{A}\mathbf{v}=\tilde{\mathbf{b}}
+\implies \mathbf{A}\mathbf{v}=\mathbf{b}
 \]
 
-Putting the solution into the Poisson equation:
+\subsection{An analytical solution}
 
-The Poisson equation:
-\[ -u''(x) = f(x)\]
+The Poisson equation (Eq. \ref{eq:Poisson}) with our function $f(x) = 100e^{-10x}$ has an analytical solution (Eq. \ref{eq:solution}).
 
-In this case $f(x) = 100 e^{-10x}$.\\
+\begin{equation}\label{eq:solution}
+u(x) = 1 - \left(1-e^{-10}\right)x - e^{-10x}
+\end{equation}
 
-The solution and derivatives:
+That can be shown by putting it into the Poisson equation (Eq. \ref{eq:Poisson}). Then we first have to find the second derivative:
 \begin{align*}
 u(x) &= 1 - \left(1-e^{-10}\right) x - e^{-10x}\\
 u'(x) &= \left(1-e^{-10}\right)+ 10 e^{-10x}\\ 
 u''(x) &= -100 e^{-10x}\\
 \end{align*}
 
-The solution is a solution of the Poisson equation:
-
+Second, we put the second derivative into Eq. \ref{eq:Poisson}:
 \[ -u''(x) = -(-100) e^{-10x} = 100 e^{-10x} = f(x) \]

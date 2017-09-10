@@ -3,90 +3,68 @@
 #include <cmath>
 #include <fstream>
 #include <iomanip>
+#include <string>
+
+#include <Windows.h>
 
 using namespace std;
 
 double source_term(double x);
 double closed_form_solution(double x);
 double RelativeError(double v, double u);
+double* Calculated_solution(int n, double* v, double* x, double h);
+void print_to_file(int n, double *v, double *u);
+double get_cpu_time();
 
-int main()
-{
+int main(){
+
     ofstream outfile;
-    outfile.open("matrix_values.txt");
+    ofstream outfile_latex;
 
-    outfile << fixed;
-    outfile << setprecision(4);
+    outfile.open("error_developement.txt");
+    outfile_latex.open("error_table.tex");
 
-    // The variables
-    int n = 20;
-    double h = 1.0/(double)(1 + n);
+    outfile_latex << fixed;
+    outfile_latex << setprecision(2);
 
-    //The vectors // new means after forward substitution
-    double x[n], v[n], b[n], new_b[n];
+    outfile << "log10(h):" << "    " <<" MaxError[log10(RelativeError)]:" << endl;
+    outfile_latex << "log(h):" << " & " << "log(RelativeError):" << " \\\\ " << "\\hline" << endl;
 
-    // The matrix values // new means after backward substitution
-    double e[n];     // this is the superdiagonal and the subdiagonal - symmetrical
-    double d[n], new_d[n];     // this is the diagonal
+    for(int i= 1; i<=6; i++){
+        int n = pow(10,i);//10^i;
+        double h = 1.0/((double)(1 + n));
+        double* x = new double[n];
+        double* v = new double[n];
+        double* u = new double[n];
 
-    double Error[n];
-
-     x[0] = h;
-
-    for(int i = 0; i<n; i++){
-        e[i] = -1.0;
-        d[i] = 2.0;
-
-        b[i] = source_term(x[i])*h*h;
-        x[i+1] = x[i] + h;
-    }
-
-    new_b[0] = b[0];
-    new_d[0] = d[0];
-    v[0] = 0.0;
-
-    // printing to file - title and initial values
-    outfile << "d" << "     " << "d_new" << "   " << "b" << "    " << "b_new" << endl;
-    outfile << d[0] << " " << new_d[0] << " " << b[0] << " " << new_b[0] << endl;
-
-    // forward substitution
-    for(int i = 1; i<n; i++){
-        new_d[i] = d[i] - (e[i-1]*e[i-1])/(double)new_d[i-1];
-
-        new_b[i] = b[i] - (new_b[i-1]*e[i-1])/(double)new_d[i-1];
-
-        outfile << d[i] << " " << new_d[i]<< " " << b[i] << " " <<new_b[i] << endl;
-    }
-
-    // backward substitution
-    v[n-1] = new_b[n-1]/(double) new_d[n-1];
-
-    for(int j = 2; j<n ; j++){
-        int i = n-j;
-        v[i] = (new_b[i] -e[i]*v[i+1])/new_d[i];
-    }
-
-    double MaxError = 0.0;
-
-    for(int i = 1; i<n; i++){
-        Error[i] = RelativeError(v[i], closed_form_solution(x[i]));
-        if(MaxError<Error[i]){
-            MaxError = Error[i];
+        // Making a position array with n points
+        // Will add the two known boundary points when writing to file
+        x[0] = h;
+        for(int i = 1; i<n; i++){
+            x[i] = x[i-1] + h;
+            u[i] = closed_form_solution(x[i]);
         }
-        outfile << Error[i] << ", ";
+
+        Calculated_solution(n, v, x, h);
+
+        print_to_file(n, v, u);
+
+        double MaxError = 100.0;
+        double Error;
+
+        for(int i = 1; i<n; i++){
+            Error = RelativeError(v[i], u[i]);
+            if(abs(MaxError)>Error){
+                MaxError = Error;
+            }
+        }
+
+        outfile << log10(h) << "    " << MaxError << endl;
+        outfile_latex << log10(h) << " & " << MaxError << " \\\\ " << " \\hline" <<endl;
     }
-
-
-    for(int i = 1; i<n; i++)
-        cout << v[i] << "  " << closed_form_solution(x[i]) << endl;
-
-    outfile << " " << endl;
-
-    outfile << "MaxError = " << MaxError;
-
     outfile.close();
 
-    cout << closed_form_solution(x[1]);
+    cout << "CPU time: " << get_cpu_time() << " s";
 
     return 0;
 }
@@ -102,6 +80,100 @@ double closed_form_solution(double x){
 }
 
 double RelativeError(double v, double u){
-    double epsilon = (abs((v-u)/u));
+    double epsilon = log10(abs((v-u)/u));
     return epsilon;
+}
+
+double* Calculated_solution(int n, double *v, double *x, double h){
+
+    // The variables
+
+    //The vectors // new means after forward substitution
+    double* b = new double[n];
+    double* new_b = new double[n];
+
+    // The matrix values // new means after backward substitution
+    double* e = new double[n];     // this is the superdiagonal and the subdiagonal - symmetrical
+    double* d = new double[n];
+    double* new_d = new double[n];
+
+    for(int i = 0; i<n; i++){
+        e[i] = -1.0;
+        d[i] = 2.0;
+
+        b[i] = source_term(x[i])*h*h;
+    }
+
+    new_b[0] = b[0];
+    new_d[0] = d[0];
+
+    // forward substitution
+    for(int i = 1; i<n; i++){
+        new_d[i] = d[i] - (e[i]*e[i-1])/(double)new_d[i-1];
+
+        new_b[i] = b[i] - (new_b[i-1]*e[i-1])/(double)new_d[i-1];
+
+    }
+
+    // backward substitution
+    v[n-1] = new_b[n-1]/(double) new_d[n-1];
+
+    for(int i = n-2; i>=0 ; i--){
+        v[i] = (new_b[i] -e[i]*v[i+1])/new_d[i];
+    }
+
+    return v;
+}
+
+void print_to_file(int n, double* v, double *u){
+
+    ofstream outfile;
+
+    string str = to_string(n);
+    string filename = string("result_n_") + str + string(".txt");
+
+    outfile.open(filename);
+
+    outfile << fixed;
+    outfile << setprecision(5);
+
+    // setting the boundary values
+    double v_0 = 0.0;
+    double u_0 = v_0;
+    double v_n = v_0;
+    double u_n = v_0;
+
+    outfile << "Calculated solution:" << " , " << "Analytical solution:" << endl;
+    outfile << v_0 << "                    " << u_0 << endl;
+    for(int i = 0; i<n;i++){
+        outfile << v[i] << "                    " << u[i] << endl;
+    }
+    outfile << v_n << "                    " << u_n << endl;
+    outfile.close();
+}
+
+double get_wall_time(){
+    LARGE_INTEGER time,freq;
+    if (!QueryPerformanceFrequency(&freq)){
+        //  Handle error
+        return 0;
+    }
+    if (!QueryPerformanceCounter(&time)){
+        //  Handle error
+        return 0;
+    }
+    return (double)time.QuadPart / freq.QuadPart;
+}
+double get_cpu_time(){
+    FILETIME a,b,c,d;
+    if (GetProcessTimes(GetCurrentProcess(),&a,&b,&c,&d) != 0){
+        //  Returns total user time.
+        //  Can be tweaked to include kernel times as well.
+        return
+            (double)(d.dwLowDateTime |
+            ((unsigned long long)d.dwHighDateTime << 32)) * 0.0000001;
+    }else{
+        //  Handle error
+        return 0;
+    }
 }

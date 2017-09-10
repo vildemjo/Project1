@@ -1,0 +1,115 @@
+\begin{itemize}
+
+\item algorithm
+
+\item Theoretical models and technicalities
+
+\end{itemize}
+
+\subsection{Algorithm}
+
+\subsection{The general tridiagonal matrix}
+The algorithm is first written for an equation with a general tridiagonal matrix on the short form:
+\[
+\mathbf{A}\mathbf{v}=\mathbf{b}
+\]
+The full form looks like this:
+\[
+    \begin{bmatrix}
+    	d_1& e_1& 0 &\cdots & 0 &0 \\
+        c_1 & d_2 & e_2 &0 &\cdots &0 \\
+        0&c_2 &d_3 & e_3 & \cdots & 0 \\
+        \vdots& \vdots & \ddots &\ddots &\ddots & \vdots \\
+        0&0 & \cdots &c_{n-2} &d_{n-1}& e_{n-1} \\
+        0&0 & \cdots & 0  &c_{n-1} & d_n \\
+        \end{bmatrix}
+\begin{bmatrix}
+	v_1\\
+	v_2\\
+	v_3\\
+	\vdots\\
+	v_{n-1}\\
+	v_{n}\\
+\end{bmatrix}=
+\begin{bmatrix}
+	b_1\\
+	b_2\\
+	b_3\\
+	\vdots\\
+	b_{n-1}\\
+	b_{n}\\
+\end{bmatrix}
+\]
+
+The method used to solve the equation numerically was to first to a forward substitution to obtain a upper triangular matrix and then a backwards substitution to obtain the solution.
+
+The algorithm preformed on the matrix values was:
+
+\paragraph{The forward substitution:\hspace{4cm}}
+
+\hspace{1cm}\linebreak
+The values on the diagonal:
+\[
+\tilde{d_i} =  d_i - \left(\frac{c_i \cdot e_i}{\tilde{d}_{i-1}}\right)\linebreak
+\]
+The values on the right side of the equation:
+\[
+\tilde{b_i} =  b_i - \left(\frac{\tilde{b}_{i-1} \cdot e_i}{\tilde{d}_{i-1}}\right)
+\]
+for $i = 2, \dots, n-2 $
+
+\paragraph{The backwards substitution:\hspace{4cm}}
+
+\hspace{1cm}\linebreak
+\[
+v_i = \frac{\left(\tilde{b}_i + v_{i+1}\right)}{\tilde{d}_i}
+\]
+for $i = 2, \dots, n-2 $. The boundary values are known ($v_0 = v_n = 0$). $v_{n-1}$ was calculated first and like this:
+\[
+v_{n-1} = \frac{\tilde{b}_{n-1}}{\tilde{d}_{n-1}}
+\]
+
+\subsection{This specific tridiagonal matrix}
+
+The matrix in our case had the same values on the different diagonals:
+\begin{multicols}{3}
+\[
+d_i = 2
+\]
+
+\[
+e_i = -1
+\]
+
+\[
+c_i = -1
+\]
+\end{multicols}
+
+We can then pre-calculate some of the operations in the algorithm and if becomes then:
+
+\paragraph{The forward substitution:\hspace{4cm}}
+
+\hspace{1cm}\linebreak
+The values on the diagonal:
+\[
+\tilde{d_i} =  d_i - \left(\frac{c_i \cdot e_i}{\tilde{d}_{i-1}}\right) = 2 - \left(\frac{(-1) \cdot (-1)}{\tilde{d}_{i-1}}\right) = \frac{i + 1}{i}
+\]
+The values on the right side of the equation:
+\[
+\tilde{b_i} =  b_i - \left(\frac{\tilde{b}_{i-1} \cdot e_i}{\tilde{d}_{i-1}}\right) = b_i - \left(\frac{\tilde{b}_{i-1} \cdot (-1)}{\tilde{d}_{i-1}}\right) = b_i + \left(\frac{\tilde{b}_{i-1}}{\tilde{d}_{i-1}}\right)
+\]
+for $i = 2,\, \dots\, , n-2 $.
+
+\paragraph{The backwards substitution:\hspace{4cm}}
+
+\hspace{1cm}\linebreak
+\[
+v_i = \frac{\left(\tilde{b}_i + v_{i+1}\right)}{\tilde{d}_i}
+\]
+for $i = 2, \dots, n-2 $. The boundary values are known ($v_0 = v_n = 0$). $v_{n-1}$ was calculated first and like this:
+\[
+v_{n-1} = \frac{\tilde{b}_{n-1}}{\tilde{d}_{n-1}}
+\]
+
+\subsection{LU-composition}
