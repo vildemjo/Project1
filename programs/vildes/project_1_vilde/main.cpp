@@ -31,7 +31,7 @@ int main(){
     outfile << "log10(h):" << "    " <<" MaxError[log10(RelativeError)]:" << endl;
     outfile_latex << "log(h):" << " & " << "log(RelativeError):" << " \\\\ " << "\\hline" << endl;
 
-    for(int i= 1; i<=4; i++){
+    for(int i= 1; i<=7; i++){
         int n = pow(10,i);//10^i;
         double h = 1.0/((double)(1 + n));
         double* x = new double[n];
@@ -51,14 +51,14 @@ int main(){
         // type 2: General_algorithm
 
         int type = 1; //0;
-        if(type == 1){
+        if(type == 0){
             Calculated_solution_special(n, v, x, h);
         } else{
             Calculated_solution(n, v, x, h);
         }
 
-        print_to_file(n, v, u, type);
-/*
+//        print_to_file(n, v, u, type);
+
         double MaxError = 100.0;
         double Error;
 
@@ -71,7 +71,7 @@ int main(){
 
         outfile << log10(h) << "    " << MaxError << endl;
         outfile_latex << log10(h) << " & " << MaxError << " \\\\ " << " \\hline" <<endl;
-*/
+
     }
 
     outfile.close();

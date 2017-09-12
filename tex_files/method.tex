@@ -130,4 +130,62 @@ v_{n} = \frac{\tilde{b}_{n}}{\tilde{d}_{n}}
 
 \subsection{LU-composition}
 
-The last method that we tried out is called LU decomposition. When using this method we 
+
+The last method that we tried out is called LU decomposition. When using this method we factorized our matrix into two other matrices, one a lower triangular matrix and the other a upper triangular matrix. Here is an example for a $ 4 \cross 4$-matrix:
+
+\[
+A = LU = 
+    \begin{bmatrix}
+    	1& 0& 0 & 0 \\
+        l_{21} & 1 & 0 &0\\
+        l_{31}&l_{32} & 1 & 0 \\
+        l_{41} & l_{42} & l_{43} & 1\\
+        \end{bmatrix}
+    \begin{bmatrix}
+    	u_{11}& u_{12}& u_{13} &u_{14} \\
+        0 & u_{22} & u_{23} &u_{24}\\
+        0& 0  &u_{33} & u_{34} \\
+        0&0 & 0 & u_{44}\\
+        \end{bmatrix}
+\]
+
+LU decomposition exists it the determinant of the matrix is non-zero.
+
+The method goes like this:
+
+\[
+\textbf{A}\textbf{v} = \textbf{b} \implies \textbf{L}\textbf{U}\textbf{v} = \textbf{b}
+\]
+\[
+\textbf{U}\textbf{v} = \textbf{L}^{-1}\textbf{b} = \textbf{w}
+\]
+
+We first solve:
+\[
+\textbf{L}^{-1}\textbf{b} = \textbf{w}
+\]
+
+Then we can easily get $\textbf{x}$, because of the shape of $\textbf{U}$, from:
+\[
+\textbf{Ux}=\textbf{w} \implies 
+\begin{bmatrix}
+		u_{11}& u_{12}& u_{13} &u_{14} \\
+        0 & u_{22} & u_{23} &u_{24}\\
+        0& 0  &u_{33} & u_{34} \\
+        0&0 & 0 & u_{44}\\
+        \end{bmatrix}
+\begin{bmatrix}
+x_1\\
+x_2\\
+x_3\\
+x_4\\
+\end{bmatrix} =
+\begin{bmatrix}
+w_1\\
+w_2\\
+w_3\\
+w_4\\
+\end{bmatrix}        
+\]
+
+The bottom equation has only one unknown, so we start there.
