@@ -4,6 +4,7 @@ CONFIG -= app_bundle
 CONFIG -= qt
 
 SOURCES += main.cpp
-INCLUDEPATH += /usr/local/include
+
 LIBS += -L/usr/local/lib
 LIBS += -larmadillo -llapack -lblas
+INCLUDEPATH += /usr/local/include

@@ -1,9 +1,11 @@
+#include <armadillo>
 #include <iostream>
 #include <cstdlib>
 #include <cmath>
 #include <fstream>
+#include <time.h>
+
 #include <iomanip>
-#include <armadillo>
 using namespace std;
 using namespace arma;
 
@@ -11,137 +13,185 @@ using namespace arma;
 double function_f(double x);
 double deriv_u(double x);
 double RelativeError(double v, double u);
+mat general_solver(int n,mat a, mat c, mat b, mat v, mat f_tilde);
+mat spess_solver(int n, mat b, mat f_tilde, mat v);
+
+void writing(int n, string oppg, double h, mat u);
+mat LU_solver(mat w, mat A);
 
 ofstream outfile;
 
+
 int main(){
 
-for(int n = 10;n<1e2 + 1; n=n*10){
-    //int n = 10;
-    double *a, *b, *c, *b_tilde, *v;
-    a = new double[n];
-    b = new double[n];
-    c = new double[n];
-    b_tilde = new double[n];
-    v = new double[n];
-    double h = 1.0/(double (n+1));
-    string outfilename = "../Plotting_kjetil/1b_n_";
+    //double *a, *b, *c, *f_tilde, *v, **A, *ar;
 
-    outfilename += to_string(n);
-    outfilename += ".txt";
+    int n_maks;
+    n_maks = 5  ;
 
-//Filling in the diagonals and b_tilde as we have in 1b
-for(int i =0; i<n;i++){
-    a[i] = -1;
-    b[i] = 2;
-    c[i] = -1;
-    b_tilde[i] = function_f((i+1)*h)*h*h;
-}
+    mat tid_1b = ones<vec>(n_maks);
+    mat tid_1c = ones<vec>(n_maks);
+    mat tid_lu = ones<vec>(n_maks);
+    mat feil = ones<vec>(n_maks);
 
+    for(int N = 1; N< n_maks+ 1; N++){
+        int n = pow(10,N);
+        mat a = ones<vec>(n);a[0] = 0;
+        mat b = (ones<vec>(n))*(-2);
+        mat c = ones<vec>(n);c[n-1] = 0;
+        mat f_tilde = zeros<vec>(n);
+        mat v = ones<vec>(n);
+        //mat u;
 
-
-//Forward substitution
-
-for(int i =1; i<n;i++){
-    b[i] = b[i]-a[i-1]*c[i-1]/b[i-1];
-    b_tilde[i] = b_tilde[i] - a[i-1]*b_tilde[i-1]/b[i-1];
-}
-
-
-
-// prepare file for writing
-outfile.open(outfilename);
-outfile << fixed;
-outfile << setprecision(4);
-outfile << "Nummerical derivartion in task 1b" <<endl;
-outfile << "n="<<"  "<< n << endl;;
-outfile <<"Nummerical_solution   Analytical_solution        rel.error"<< endl;
-
-
-//Backward substitution
-v[n-1] = b_tilde[n-1]/b[n-1];
-
-for(int i =n-2; i>=0 ; i--){
-    v[i] = (b_tilde[i]- c[i]*v[i+1])/b[i];
-}
-for(int i=0; i<n; i++){
-    outfile << v[i] << "               " << deriv_u((i+1)*h) <<"                       "<<RelativeError(v[i],deriv_u((i+1)*h) ) << endl;
-}
-
-// ALl arrays are internal, have not x=0 and x=1, but everything inside.
-
-
-
-outfile.close();
-}
-
-// -----------------------------------------------------------
-// 1c:
-// -----------------------------------------------------------
-
-
-for(int n = 10;n<11; n=n*10){
-    //int n = 10;
-    double *b, *c, *b_tilde, *v;
-    //a = new double[n];
-    b = new double[n];
-    c = new double[n];
-    b_tilde = new double[n];
-    v = new double[n];
-    double h = 1.0/(double (n+1));
-    string outfilename = "../Plotting_kjetil/1b_n_";
-
-    outfilename += to_string(n);
-    outfilename += ".txt";
-
-//Filling in the diagonals and b_tilde as we have in 1b
-for(int i =0; i<n;i++){
-    //a[i] = -1;
-    b[i] = 2;
-    c[i] = -1;
-    b_tilde[i] = function_f((i+1)*h)*h*h;
+        double h = 1.0/(double (n+1));
+    //Filling in the diagonals and f_tilde as we have in 1b
+    for(int i =0; i<n;i++){
+        a[i] = -1;
+        b[i] = 2;
+        c[i] = -1;
+        if (i == 0) a[i] = 0;
+        if (i==n-1) c[i] = 0;
+        f_tilde[i] = function_f((i+1)*h)*h*h;
     }
 
-int flops;
-flops = 4*(n-1);
+    //armadillo solves everything
 
-//Forward substitution
+    mat A = zeros<mat>(n,n);
+      for (int i=0; i<n; i++) {
+        A(i,i)=b[i];
+        if (i!=n-1) A(i,i+1) = c[i];
+        if (i!=n-1) A(i+1,i) = a[i+1];
+    }
 
-for(int i =1; i<n;i++){
-    b[i] = (i+2.0)/(i+1.0);
-    b_tilde[i] = b_tilde[i] + (i)*b_tilde[i-1]/double(i+1.0);
+    //vec ar = solve(A,f_tilde);
+
+
+    clock_t start1, finish1;
+    start1 = clock();
+    mat u = general_solver( n, a, c,  b,  v,  f_tilde);
+    finish1 = clock();
+    tid_1b[N-1] = (double) (finish1 - start1)/(CLOCKS_PER_SEC );
+
+
+    clock_t start, finish;
+    start = clock();
+    mat U = spess_solver( n,  b,  f_tilde,  v);
+    finish = clock();
+    tid_1c[N-1] = (double) (finish - start)/(CLOCKS_PER_SEC );
+
+    //cout << setprecision(10) << setw(20) << "Time used  for vector addition=" << timeused  << endl;
+
+
+    clock_t start2, finish2;
+    start2 = clock();
+
+    u = LU_solver(f_tilde, A);
+    finish2 = clock();
+    tid_lu[N-1] = (double) (finish2 - start2)/(CLOCKS_PER_SEC );
+
+
+    string filnavn = "1c_n_";
+    filnavn += to_string(n);
+    double max_error = 0;
+    for (int i=0;i<n;i++){
+        if (U[i]>max_error) max_error = U[i];
+    }
+    feil[N-1] = max_error;
+
+    //writing( n, filnavn,  h,  U);
+
 }
 
 
-v[n-1] = b_tilde[n-1]/b[n-1];
-for(int i =n-2; i>=0 ; i--){
-    v[i] = double(i)/(i+1.0)*(b_tilde[i]+ v[i+1]);
-    //v[i] = (b_tilde[i] + v[i+1])/b[i];
+outfile.open("../Plotting_kjetil/tid.txt");
+outfile << fixed;
+outfile << setprecision(4);
+outfile << "Time comparisson 1b, 1c" <<endl;
+outfile << "n         time general (ms)      time special (ms)       time LU (s)        n^3     max rel. error" << endl;;
 
+for(int i=0; i<n_maks; i++){
+    outfile <<  "1e" << i+1 <<"             "<<tid_1b[i]*1e3<<"             "<< tid_1c[i]*1e3<< "               "<< tid_lu[i] << "         "<< feil[i]<<   endl;
 }
 
-
-for(int i= 0; i<n;i++){
-     cout<< v[i]<< endl;
-}
-}
-
-
-
-
-
-
-
-
+outfile.close();
 
 
 return 0;
+
+
+
 }
 
 
+mat spess_solver(int n, mat b, mat f_tilde, mat v){
+
+for(int i =1; i<n+1;i++){
+    b[i-1] = (i+1.0)/(i);
+    f_tilde[i-1] = f_tilde[i-1] + (i-1)*f_tilde[i-2]/double(i);
+}
+
+
+v[n-1] = f_tilde[n-1]/b[n-1];
+for(int i =n; i>=2; i--){
+    v[i-2] = double(i-1)/(i)*(f_tilde[i-2]+ v[i-1]);
+    //v_[i] = (f_tilde_[i] + v_[i+1])/b_[i];
+
+}
+
+return v;
+}
+
+mat general_solver(int n,mat a, mat c, mat b, mat v, mat f_tilde){
+//Forward substitution
+
+for (int i = 1; i<n;i++){
+    double alpha = a[i]/b[i-1];
+    b[i] = b[i] - alpha*c[i-1];
+    f_tilde[i] = f_tilde[i] - alpha*f_tilde[i-1];
+}
+
+//Backward substitution
+v[n-1] = f_tilde[n-1]/b[n-1];
+for(int i =n-2; i>=0 ; i--){
+    v[i] = (f_tilde[i]- c[i]*v[i+1]) / b[i];
+}
+return v;
+}
+
+void writing(int n, string filnavn, double h, mat u){
+
+        string outfilename = "../Plotting_kjetil/";
+        outfilename += filnavn;
+        outfilename += ".txt";
+
+        // prepare file for writing
+        outfile.open(outfilename);
+        outfile << fixed;
+        outfile << setprecision(4);
+        outfile << "Nummerical derivartion in task" << filnavn <<endl;
+        outfile << "n="<<"  "<< n << endl;;
+        outfile <<"Nummerical_solution   Analytical_solution        rel.error"<< endl;
+
+
+        for(int i=0; i<n; i++){
+            outfile << u[i] << "               " << deriv_u((i+1)*h) <<"                       "<<RelativeError(u[i],deriv_u((i+1)*h) ) << endl;
+        }
+
+        // ALl arrays are internal, have not x=0 and x=1, but everything inside.
 
 
 
+        outfile.close();
+
+
+}
+
+mat LU_solver(mat w, mat A){
+    mat L,U;
+    lu(L,U,A);
+    mat Y = solve(L,w);
+    mat X = solve(U,Y);
+    return X;}
 
 double function_f(double x){
     double f = 100*exp(-10*x);
@@ -158,3 +208,4 @@ double RelativeError(double v, double u){
     double epsilon = (abs((v-u)/u));
     return epsilon;
 }
+

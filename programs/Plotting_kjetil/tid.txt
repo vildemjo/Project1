@@ -1,0 +1,6 @@
+Time comparisson 1b, 1c
+n         time general (ms)      time special (ms)       time LU         max rel. error
+1e1             0.0280             0.0030               0.6510         0.6181
+1e2             0.1060             0.0070               3.8820         0.6692
+1e3             0.2300             0.0510               299.3620         0.6697
+1e4             0.5750             0.3340               139101.3580         0.6698
