@@ -16,7 +16,7 @@ def filer_funk(): #Stikkord = hvilke filer, Skanntype = n
 	skanntype = "error"
 	filer = []
 	filnavn = []
-	for file in glob.glob("*.txt"):
+	for file in glob.glob("error.txt"):
 		filer.append(file)
 	antall_filer = len(filer)
 	
@@ -58,4 +58,4 @@ for k in range(len(filer)):
 	legend()
 	title("Plot of the developement of the error")
 	xlabel("log(h)"); ylabel("log(Error)")
-	savefig("ErrorDevelopement.pdf" %n)
+	savefig("ErrorDevelopement.pdf")
