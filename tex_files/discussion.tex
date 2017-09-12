@@ -1,0 +1,101 @@
+\subsection{Floating point operations}
+
+A floating point operation is either addition, subtraction, multiplication or division. Comparing the number of floating point operations is a way to compare the cost of different algorithms. That way, one can find the most efficient algorithm to solve a problem.
+
+\subsubsection{Algorithm of the general tridiagonal matrix}
+
+The number of floating point operations in the Gaussian elimination method with the general tridiagonal can be found from the algorithm. The forward substitution looked like this:
+\[
+\tilde{d_i} =  d_i - \left(\frac{c_i \cdot e_i}{\tilde{d}_{i-1}}\right)\linebreak
+\]
+
+\[
+\tilde{b_i} =  b_i - \left(\frac{\tilde{b}_{i-1} \cdot e_i}{\tilde{d}_{i-1}}\right)
+\]
+for $i = 2, \dots, n $
+
+The first expression involves three floating point operations and these were preformed $n-1$ times.
+
+The second expression also involves three floating point operations, so the sum of floating point operations from the forward substitution is:
+
+\[
+3(n-1)+3(n-1) = 6(n-1)
+\]
+
+The algorithm for the backward substitution looked like this:
+\[
+v_i = \frac{\left(\tilde{b}_i + e_i v_{i+1}\right)}{\tilde{d}_i}
+\]
+for $i = 2, \dots, n-1 $. The last position, calculated first:
+
+\[
+v_{n} = \frac{\tilde{b}_{n}}{\tilde{d}_{n}}
+\]
+
+The first expression involves three floating point operations and is preformed $n-2$ times. The last involves one floating point operation and is preformed only once. The sum of floating point operations for the backward substitution is then:
+\[
+3(n-2) + 1 = 3n - 5
+\]
+
+The sum of floating point operation for the whole Gaussian elimination is then:
+\[
+6n - 6 + 3n - 5 = 9n - 11 \approx 9n
+\]
+
+\subsubsection{Algorithm of the specific tridiagonal matrix}
+
+
+The number of floating point operations in the Gaussian elimination method with the specific tridiagonal can be found from the algorithm. The forward substitution looked like this:
+\[
+\tilde{d_i} = \frac{i+1}{i}
+\]
+\[
+\tilde{b_i} = b_i + \frac{\tilde{b}_i}{\tilde{d}_i} 
+\]
+for $i = 2, \dots, n $
+
+The first expression involves no floating point operations, it can be pre-calculated and does not count.
+
+The second expression also involves two floating point operations, so the sum of floating point operations from the forward substitution is:
+
+\[
+2(n-1) = 2n-2
+\]
+
+The algorithm for the backward substitution looked like this:
+\[
+v_i = \frac{\left(\tilde{b}_i +v_{i+1}\right)}{\tilde{d}_i}
+\]
+for $i = 2, \dots, n-1 $. The last position, calculated first:
+
+\[
+v_{n} = \frac{\tilde{b}_{n}}{\tilde{d}_{n}}
+\]
+
+The first expression involves two floating point operations and is preformed $n-2$ times. The last involves one floating point operation and is preformed only once. The sum of floating point operations for the backward substitution is then:
+\[
+2(n-2) + 1 = 4n - 3
+\]
+
+The sum of floating point operation for the whole Gaussian elimination is then:
+\[
+2n - 2 + 2n - 3 = 4n - 5 \approx 4n
+\]
+
+\subsubsection{Gaussian elimination in general}
+
+The Gaussian elimination method of solving a set of linear equations requires $n^3$ floating point operations for a regular $n \cross n$-matrix, that is not tridiagonal or any other special type of matrix. 
+
+\subsubsection{LU decomposition}
+
+The floating point operations for the LU decomposition method can be separated in two parts; the decomposing of the matrix into an upper triangular matrix multiplied with a lower triangular matrix and the calculation of the set of equation with different 'right hand side'-vectors.
+
+The number of floating point operations required to LU decompose a matrix scales to $n^3$ for a $n \cross$-matrix. After the decomposition the floating points of the calculation of the set of equations scales to $n^2$ for a $n \cross n$-matrix.
+
+If one was to use the LU decomposition method for a $10^5 \cross 10^5$-matrix it would require $\left(10^5\right)^3 + \left(10^5\right)^2 \approx 10^{15} $ floating point operations. If a computer calculates $10^9$ floating points per second (flops) it would take $\frac{10^{15}\text{flop}}{10^{9}\text{flops}} = 10^6$ seconds, which is approximately 12 days. That is too long.
+
+\subsubsection{Comparison}
+
+It is easy to see that the Gaussian elimination method is the most effective method for our problem with a tridiagonal matrix. It needs the least number of floating point operations. It is also possible to make the algorithm even more effective by specializing it to our tridiagonal matrix which has the same values on the diagonal and on the super- and sub-diagonal. 
+
+If however we had a regular random matrix and were to solve the equations for many different 'right-hand-side'-vectors, the best method of these would be the LU decomposition. Then we would only have to decompose the matrix once, which require $n^3$ floating point operations for an $n \cross n$-matrix, and for every new 'right-hand-side'-vector it would only require $n^2$ floating point operations. Compared with the Gaussian elimination method that requires $n^3$ floating point operations to solve the set of equations every time.

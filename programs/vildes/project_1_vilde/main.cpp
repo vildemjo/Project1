@@ -13,7 +13,8 @@ double source_term(double x);
 double closed_form_solution(double x);
 double RelativeError(double v, double u);
 double* Calculated_solution(int n, double* v, double* x, double h);
-void print_to_file(int n, double *v, double *u);
+double* Calculated_solution_special(int n, double *v, double *x, double h);
+void print_to_file(int n, double *v, double *u, int type);
 double get_cpu_time();
 
 int main(){
@@ -30,7 +31,7 @@ int main(){
     outfile << "log10(h):" << "    " <<" MaxError[log10(RelativeError)]:" << endl;
     outfile_latex << "log(h):" << " & " << "log(RelativeError):" << " \\\\ " << "\\hline" << endl;
 
-    for(int i= 1; i<=7; i++){
+    for(int i= 1; i<=4; i++){
         int n = pow(10,i);//10^i;
         double h = 1.0/((double)(1 + n));
         double* x = new double[n];
@@ -46,9 +47,17 @@ int main(){
             u[i] = closed_form_solution(x[i]);
         }
 
-        Calculated_solution(n, v, x, h);
+        // type 1: Special_algorithm
+        // type 2: General_algorithm
 
-        // print_to_file(n, v, u);
+        int type = 1; //0;
+        if(type == 1){
+            Calculated_solution_special(n, v, x, h);
+        } else{
+            Calculated_solution(n, v, x, h);
+        }
+
+        print_to_file(n, v, u, type);
 /*
         double MaxError = 100.0;
         double Error;
@@ -128,12 +137,67 @@ double* Calculated_solution(int n, double *v, double *x, double h){
     return v;
 }
 
-void print_to_file(int n, double* v, double *u){
+double* Calculated_solution_special(int n, double *v, double *x, double h){
+
+    // The variables
+
+    //The vectors // new means after forward substitution
+    double* b = new double[n];
+    double* new_b = new double[n];
+
+    // The matrix values // new means after backward substitution
+    double* e = new double[n];     // this is the superdiagonal and the subdiagonal - symmetrical
+    double* d = new double[n];
+    double* new_d = new double[n];
+
+    for(int i = 0; i<n; i++){
+        e[i] = -1.0;
+        d[i] = 2.0;
+
+        b[i] = source_term(x[i])*h*h;
+    }
+
+    new_b[0] = b[0];
+    new_d[0] = d[0];
+
+    // forward substitution
+    for(int i = 1; i<n; i++){
+        double ii = i;
+        new_d[i] = (ii+1.0)/(double) ii;
+
+        //new_b[i] = b[i] + new_b[i-1]/(double)new_d[i-1];
+        new_b[i] = b[i] + (ii-1.0)*new_b[i-1]/(double)ii;
+
+    }
+
+    // backward substitution
+    v[n-1] = new_b[n-1]/(double) new_d[n-1];
+
+    for(int i = n-2; i>=0 ; i--){
+        double ii = i;
+        v[i] = (new_b[i] + v[i+1])/ (double) new_d[i];
+        //v[i] = (ii-1.0)*(new_b[i] + v[i+1])/ (double) ii;
+    }
+
+    return v;
+
+}
+
+void print_to_file(int n, double* v, double *u, int type){
 
     ofstream outfile;
 
     string str = to_string(n);
-    string filename = string("result_n_") + str + string(".txt");
+
+    string type_name;
+
+    if(type == 1){
+        type_name = "special_";
+    } else{
+        type_name = "general_";
+    }
+
+    string filename = string("result_") + type_name + string("n_") + str + string(".txt");
 
     outfile.open(filename);
 
