@@ -12,7 +12,7 @@ def filer_funk(): #Stikkord = hvilke filer, Skanntype = n
 	for file in glob.glob("*.txt"):
 		filer.append(file)
 	antall_filer = len(filer)
-	
+
 	
 	# filer_med_stikkord =[]
 	# legendnavn_med_stikkord = []
@@ -35,6 +35,9 @@ for k in range(len(filer)):
 	nummerisk = []
 	analytisk = []
 	feil =[]
+	nummerisk.append(0)
+	analytisk.append(0)
+
 	with open(filer[k]) as infile:
 		for i in range(3):
 			firstline = infile.readline()
@@ -44,18 +47,19 @@ for k in range(len(filer)):
 			nummerisk.append(thisline[0])
 			analytisk.append(thisline[1])
 			feil.append(thisline[2])
-
-	n = len(nummerisk)
+	nummerisk.append(0)
+	analytisk.append(0)
+	n = len(nummerisk)-2
 	print n
 
-	x = linspace(0,1,n)
+	x = linspace(0,1,n+2)
 	figure(k)
-	plot(x,nummerisk, label = "Nummerical")
+	plot(x,nummerisk, label = "Numerical")
 	plot(x, analytisk, label = "Analytical")
 	legend()
-	title("Plot with the general algorithm, n = %0.f" %n)
+	title("Plot with the special algorithm, h = %.0e" %(1/float(n)))
 	xlabel("x"); ylabel("y")
-	savefig("1b_n_%.0f.pdf" %n)
+	savefig("n_%.0f.pdf" %n)
 	"""
 	figure(5)
 	title("Rel.error")
