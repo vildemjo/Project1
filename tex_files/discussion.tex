@@ -99,3 +99,8 @@ If one was to use the LU decomposition method for a $10^5 \cross 10^5$-matrix it
 It is easy to see that the Gaussian elimination method is the most effective method for our problem with a tridiagonal matrix. It needs the least number of floating point operations. It is also possible to make the algorithm even more effective by specializing it to our tridiagonal matrix which has the same values on the diagonal and on the super- and sub-diagonal. 
 
 If however we had a regular random matrix and were to solve the equations for many different 'right-hand-side'-vectors, the best method of these would be the LU decomposition. Then we would only have to decompose the matrix once, which require $n^3$ floating point operations for an $n \cross n$-matrix, and for every new 'right-hand-side'-vector it would only require $n^2$ floating point operations. Compared with the Gaussian elimination method that requires $n^3$ floating point operations to solve the set of equations every time.
+
+\subsection{CPU time}
+
+
+\subsection{Round-off error}
