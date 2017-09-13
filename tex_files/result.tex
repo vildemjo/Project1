@@ -2,7 +2,21 @@
 
 This section should include the CPU time of the three different methods.
 
-\paragraph{Vilde's CPU times:\hspace{4cm}}
+
+
+\begin{table}[H]
+
+\begin{tabular}{|c|c|c|c|c|c|}
+	\hline
+	\input{figures/tid1.tex}
+	\hline
+\end{tabular}
+\caption{The total time of the algorithm in the general case, the special case and using LU-decomposition}\label{tab:time}
+\end{table}
+
+
+
+
 
 \hspace{1cm}\linebreak
 
@@ -14,7 +28,7 @@ Specialized: 'CPU time: 2.04688 s'
 
 \subsection{The error}
 
-Two find out how the error developed with the number of mesh points, the step length, we calculated the maximum relative error with different step lengths. The results from these calculations are in Tb. \ref{tab:error_developement} and in Fig. \ref{fig:error_development}. 
+Too find out how the error developed with the number of mesh points, the step length, we calculated the maximum relative error with different step lengths. The results from these calculations are in Tb. \ref{tab:error_developement} and in Fig. \ref{fig:error_development}. 
 
 \begin{table}[H]\caption{This is a table listing the log of the error and the log of the associated $h$ value. We can see that the smallest error, log(RelativeError) $= -7$, is accomplished when $\log(h) = -4$.}\label{tab:error_developement}
 \begin{tabular}{cc}
