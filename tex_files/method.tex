@@ -1,11 +1,3 @@
-\begin{itemize}
-
-\item Algorithm
-
-\item Theoretical models and technicalities
-
-\end{itemize}
-
 \subsection{Algorithm}
 
 The first algorithms that we used are based on Gaussian elimination. This method starts by making the matrix upper triangular, thereafter one can solve the set of linear equations by starting at the bottom of the matrix where there are only one unknown. 
@@ -49,9 +41,9 @@ The method used to solve the equation numerically was to first to a forward subs
 
 The algorithm preformed on the matrix values was:
 
-\paragraph{The forward substitution:\hspace{4cm}}
+\paragraph{The forward substitution:}
 
-\hspace{1cm}\linebreak
+\hspace{1cm}\\
 The values on the diagonal:
 \[
 \tilde{b}_i =  b_i - \left(\frac{a_i \cdot c_i}{\tilde{b}_{i-1}}\right)\linebreak
@@ -62,9 +54,9 @@ The values on the right side of the equation:
 \]
 for $i = 2, \dots, n $
 
-\paragraph{The backward substitution:\hspace{4cm}}
+\paragraph{The backward substitution:}
 
-\hspace{1cm}\linebreak
+\hspace{1cm}\\
 \[
 v_i = \frac{\left(\tilde{f}_i - c_i\cdot v_{i+1}\right)}{\tilde{b}_i}
 \]
@@ -94,9 +86,9 @@ c_i = -1
 
 We can then pre-calculate some of the operations in the algorithm and if becomes then:
 
-\paragraph{The forward substitution:\hspace{4cm}}
+\paragraph{The forward substitution:}
 
-\hspace{1cm}\linebreak
+\hspace{1cm}\\
 The values on the diagonal:
 \[
 \tilde{b_i} =  b_i - \left(\frac{a_i \cdot c_i}{\tilde{b}_{i-1}}\right) = 2 - \left(\frac{(-1) \cdot (-1)}{\tilde{b}_{i-1}}\right) = 
@@ -126,9 +118,9 @@ If we put in $\tilde{b}_{i-1} = \frac{i}{i-1}$:
 
 for $i = 2,\, \dots\, n $.
 
-\paragraph{The backward substitution:\hspace{4cm}}
+\paragraph{The backward substitution:}
 
-\hspace{1cm}\linebreak
+\hspace{1cm}\\
 \[
 v_i = \frac{\left(\tilde{f}_i + v_{i+1}\right)}{\tilde{b}_i}
 \]

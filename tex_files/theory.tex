@@ -16,7 +16,7 @@ where $f_i=f(x_i)$.
 The next step is to rewrite Eq. \ref{eq:secderiv} as a linear set of equations of the form of Eq. \ref{eq:matrix_equation}.
 
 \begin{equation}\label{eq:matrix_equation}
-   \mathbf{A}\mathbf{v} = \mathbf{b},
+   \frac{1}{h^2}\mathbf{A}\mathbf{v} = \mathbf{f},
 \end{equation}
 where $\mathbf{A}$ is an $n\times n$  tridiagonal matrix:
 
@@ -30,14 +30,13 @@ where $\mathbf{A}$ is an $n\times n$  tridiagonal matrix:
         0&0 & \cdots & 0  &-1 & 2 \\
         \end{bmatrix},
 \]
-and $b_i=h^2f_i$.\\
 
-Writing out the equations gives us:
+Writing out the equations, without including the constant $\frac{1}{h^2}$, gives us:
 \begin{align*}
-i = 1: &-v_0+2v_1-v_2 = f_1 h^2\\
-i = 2: &-v_1+2v_2-v_3 = f_2 h^2\\
+i = 1: &-v_0+2v_1-v_2 = f_1\\
+i = 2: &-v_1+2v_2-v_3 = f_2\\
 \vdots \indent &\indent \vdots\\
-i = n: &-v_{n-1}+2v_n-v_{n+1} = f_n h^2\\
+i = n: &-v_{n-1}+2v_n-v_{n+1} = f_n\\
 \end{align*}
 
 where $v_0 = 0$ and $v_{n+1} = 0$.
@@ -45,12 +44,12 @@ where $v_0 = 0$ and $v_{n+1} = 0$.
 Adding some zeros to the equations for illustrative purposes:
 
 \begin{align*}
-&i = 1:  &2v_1-v_2 + 0 + 0 + 0 +0 + \cdots + 0 = f_1 h^2\\
-&i = 2: &-v_1+2v_2-v_3 +0 + 0 + \cdots + 0 = f_2 h^2\\
-&i = 3:  &0 -v_2+2v_3-v_4 + 0 + \cdots + 0 = f_3 h^2\\
+&i = 1:  &2v_1-v_2 + 0 + 0 + 0 +0 + \cdots + 0 = f_1  \\
+&i = 2: &-v_1+2v_2-v_3 +0 + 0 + \cdots + 0 = f_2 \\
+&i = 3:  &0 -v_2+2v_3-v_4 + 0 + \cdots + 0 = f_3 \\
 &\indent\vdots \indent &\vdots \indent \indent \hspace{2cm} \indent \\
-&i = n-1: &0 + \cdots+ 0 -v_{n-2}+2v_{n-1} - v_n= f_{n-1} h^2\\
-&i = n: &0 + \cdots + 0 + 0 + 0 -v_{n-1}+2v_n= f_n h^2\\
+&i = n-1: &0 + \cdots+ 0 -v_{n-2}+2v_{n-1} - v_n= f_{n-1}\\
+&i = n: &0 + \cdots + 0 + 0 + 0 -v_{n-1}+2v_n= f_n \\
 \end{align*}
 
 We can now recognize the equations as a product between a matrix and a vector that equals another vector.\\
@@ -64,15 +63,15 @@ $$\textbf{v} = \begin{bmatrix}
 	v_{n}\\
 \end{bmatrix}$$
 
-$$ \tilde{\textbf{b}} = \begin{bmatrix}
-	f_1 h^2\\
-	f_2 h^2\\
+$$ \textbf{f} = \begin{bmatrix}
+	f_1\\
+	f_2\\
 	\vdots\\
-	f_{n} h^2\\
+	f_{n}\\
 \end{bmatrix} $$
 \end{multicols}
 
-The matrix is the matrix $\textbf{A}$. Then we have:
+The matrix is the matrix $\textbf{A}$, and we include the constant $\frac{1}{h^2}$ again. Then we have:
 \[
     \begin{bmatrix}
     	2& -1& 0 &\cdots & 0 &0 \\
@@ -91,14 +90,14 @@ The matrix is the matrix $\textbf{A}$. Then we have:
 	v_{n}\\
 \end{bmatrix}=
 \begin{bmatrix}
-	f_1 h^2\\
-	f_2 h^2\\
-	f_3 h^2\\
+	f_1\\
+	f_2\\
+	f_3\\
 	\vdots\\
-	f_{n-1} h^2\\
-	f_{n} h^2\\
+	f_{n-1}\\
+	f_{n}\\
 \end{bmatrix}
-\implies \mathbf{A}\mathbf{v}=\mathbf{b}
+\implies \frac{1}{h^2}\mathbf{A}\mathbf{v}=\mathbf{f}
 \]
 
 \subsection{An analytical solution}
