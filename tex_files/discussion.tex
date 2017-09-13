@@ -1,4 +1,4 @@
-\subsection{Floating point operations}
+\subsection{Floating point operations}\label{section:FLOPS}
 
 A floating point operation is either addition, subtraction, multiplication or division. Comparing the number of floating point operations is a way to compare the cost of different algorithms. That way, one can find the most efficient algorithm to solve a problem.
 
@@ -96,11 +96,17 @@ If one was to use the LU decomposition method for a $10^5 \cross 10^5$-matrix it
 
 \subsubsection{Comparison}
 
-It is easy to see that the Gaussian elimination method is the most effective method for our problem with a tridiagonal matrix. It needs the least number of floating point operations. It is also possible to make the algorithm even more effective by specializing it to our tridiagonal matrix which has the same values on the diagonal and on the super- and sub-diagonal. 
+It is easy to see that the Gaussian elimination method is more effective than the LU-decomposition, both from this discussion and table \ref{tab:error_developement}. It needs the least number of floating point operations. It is also possible to make the algorithm even more effective by specializing it to our tridiagonal matrix which has the same values on the diagonal and on the super- and sub-diagonal. 
 
 If however we had a regular random matrix and were to solve the equations for many different 'right-hand-side'-vectors, the best method of these would be the LU decomposition. Then we would only have to decompose the matrix once, which require $n^3$ floating point operations for an $n \cross n$-matrix, and for every new 'right-hand-side'-vector it would only require $n^2$ floating point operations. Compared with the Gaussian elimination method that requires $n^3$ floating point operations to solve the set of equations every time.
 
-\subsection{CPU time}
+The number of FLOPS is also reflected in the times the different algorithms use on the CPU, as shown in table \ref{tab:time}. 
 
 
 \subsection{Round-off error}
+
+To a given value, the relative error decreases as $ h $ decreases. From table \ref{tab:error_developement} we see that the relative error also increases at a certain value of h and the nummerical round-off-errors come into play. The interesting part is that this happens for different values of $ h $ in the general algorithm and the special algorithm, with the special algorithm getting round-off errors much later than the general does. The general algorithm also has higher round off errors, which is possible to see for $ log_{10}(h) = -8 $. 
+
+This is likely due to the fact that the general algorithm refers to stored doubles. It does this to a much larger extent while running the algorithm, but also when it is calculating the relative error. On the other hand, the special algorithm refers much less to stored variables and does not refer to a list while other than the numerical one, while calculating the error.This means that the value of u from equation \ref{error} might be more accurate as it is used both in the mentioning and the counter. 
+
+
